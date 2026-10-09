@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>eSign completion</title>
+    <style>body{font:16px system-ui,sans-serif;max-width:44rem;margin:3rem auto;padding:0 1rem}.error{color:#b42318;background:#fef3f2;padding:1rem}dt{font-weight:700}</style>
+</head>
+<body>
+    <h1>eSign completion</h1>
+    <% if (error) { %>
+        <p class="error"><%= error %></p>
+    <% } else { %>
+        <dl>
+            <dt>Transaction</dt><dd><%= transactionId %></dd>
+            <dt>Status</dt><dd><%= result.status %></dd>
+            <% if (result.signer_name) { %><dt>Signer</dt><dd><%= result.signer_name %></dd><% } %>
+            <% if (result.failure_reason) { %><dt>Failure reason</dt><dd><%= result.failure_reason %></dd><% } %>
+        </dl>
+        <% if (result.status === 'completed') { %>
+            <p><a href="/esign/<%= encodeURIComponent(transactionId) %>/download">Download signed document</a></p>
+            <% if (artifactsStored) { %>
+                <p>The eSign XML, response XML, and UID token have been stored server-side for this sample session.</p>
+            <% } %>
+        <% } else { %>
+            <p>The broker has not completed signing yet. Refresh this page after the signing journey finishes.</p>
+        <% } %>
+    <% } %>
+    <p><a href="/">Start another request</a></p>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Node IAM eSign example</title>
+    <style>body{font:16px system-ui,sans-serif;max-width:44rem;margin:3rem auto;padding:0 1rem}label,input,select,button{display:block;margin:.5rem 0}input,select{width:100%;box-sizing:border-box;padding:.5rem}.error{color:#b42318;background:#fef3f2;padding:1rem}.hint{color:#555;font-size:.9rem}.hidden{display:none}</style>
+</head>
+<body>
+    <h1>eSign a document</h1>
+    <p>This sample sends the document to the IAM eSign broker with its server-side API key.</p>
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+    <form method="post" action="/esign" enctype="multipart/form-data">
+        <label for="document">Document (PDF, JPG, or PNG; max 20 MB)</label>
+        <input id="document" name="document" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" required>
+        <label for="mode">Signing mode</label>
+        <select id="mode" name="mode">
+            <option value="direct" selected>Direct</option>
+            <option value="visible">Visible</option>
+        </select>
+        <p id="direct-hint" class="hint">Direct mode requires a PDF and preserves earlier signatures for multi-signature documents.</p>
+        <div id="signature-field-group">
+            <label for="signature_field_name">Signature field name</label>
+            <input id="signature_field_name" name="signature_field_name" maxlength="120" value="Node application approval">
+        </div>
+        <div id="signer-name-group" class="hidden">
+            <label for="signer_name">Signer name</label>
+            <input id="signer_name" name="signer_name" maxlength="120" disabled>
+            <p class="hint">Visible mode is for a single signature and does not preserve earlier PDF signatures.</p>
+        </div>
+        <% if (hasReusableUidToken) { %>
+            <label><input name="reuse_uid_token" type="checkbox" checked> Reuse the UID token saved by this application</label>
+            <p class="hint">The token stays on the server; it is never shown in this form.</p>
+        <% } %>
+        <button type="submit">Start eSign</button>
+    </form>
+    <script>
+        const mode = document.getElementById('mode');
+        const signatureFieldGroup = document.getElementById('signature-field-group');
+        const signerNameGroup = document.getElementById('signer-name-group');
+        const signatureFieldName = document.getElementById('signature_field_name');
+        const signerName = document.getElementById('signer_name');
+
+        function updateSigningFields() {
+            const visible = mode.value === 'visible';
+            signatureFieldGroup.classList.toggle('hidden', visible);
+            signatureFieldName.disabled = visible;
+            signerNameGroup.classList.toggle('hidden', !visible);
+            signerName.disabled = !visible;
+            signerName.required = visible;
+        }
+
+        mode.addEventListener('change', updateSigningFields);
+        updateSigningFields();
+    </script>
+</body>
+</html>

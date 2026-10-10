@@ -1,6 +1,6 @@
 # Node.js eSign example
 
-A minimal Express application that integrates with the Nagaland IAM eSign broker without Laravel or IAM user login.
+A minimal Express application that integrates with the Nagaland IAM eSign broker.
 
 It keeps the API key on the server, creates the broker request, stores state and transaction ownership in the browser session, validates IAM's completion redirect, downloads only completed documents, and retrieves eSign XML artifacts after completion.
 

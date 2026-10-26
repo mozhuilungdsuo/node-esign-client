@@ -33,6 +33,8 @@ The form lets you choose a signing mode. **Direct** mode requires a PDF and shou
 
 After a completed signing, the sample retrieves `esign_xml`, `esign_response_xml`, and `uid_token` from IAM. They are retained only in server memory, associated with the current server-side browser session. When a UID token is available, the next request displays a checked **Reuse the UID token** option; the application sends the token to IAM without placing it in the form, URL, or browser session data.
 
+For visible signing, the form also offers `top-left`, `top-right`, `bottom-left`, and `bottom-right` placement. Leaving it on **Bottom right (IAM default)** omits the field and uses IAM's default placement.
+
 ## Production notes
 
 - Use HTTPS and set `ESIGN_COMPLETION_URL` to the public application URL.

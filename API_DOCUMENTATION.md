@@ -70,8 +70,9 @@ curl --request POST "$IAM_BASE_URL/api/esign/requests" \
   --form "client_reference=approval-12345" \
   --form "completion_url=https://client.example.gov.in/esign/complete" \
   --form "state=$ESIGN_STATE" \
-  --form "mode=direct" \
-  --form "signature_field_name=Approval"
+  --form "mode=visible" \
+  --form "signer_name=Jane Doe" \
+  --form "signature_position=bottom-right"
 ```
 
 ### Request fields
@@ -85,6 +86,7 @@ curl --request POST "$IAM_BASE_URL/api/esign/requests" \
 | `mode` | No | `direct` (default) or `visible`. Use `direct` for every request in a document that requires multiple signatures. |
 | `signature_field_name` | No | Field name for a direct signature; maximum 120 characters. |
 | `signer_name` | Required for `visible` mode | Name used for visible signing; maximum 120 characters. |
+| `signature_position` | No | Visible-signature placement: `top-left`, `top-right`, `bottom-left`, or `bottom-right`. Omit it to use IAM's default bottom-right placement. Ignored by direct mode. |
 | `uid_token` | No | UID token obtained from a previous completed transaction for the same signer; maximum 72 characters. Send it only from your backend. |
 
 ### Multiple signatures and signing modes
@@ -92,6 +94,8 @@ curl --request POST "$IAM_BASE_URL/api/esign/requests" \
 For a document that will receive more than one signature, use `mode=direct` for **every** signing request. `direct` creates an append-only, invisible signature field and preserves the existing PDF bytes and signatures, so the completed PDF can be submitted again for the next signer.
 
 `visible` mode prepares a new, rendered PDF in order to add visible signer information. It does not preserve prior PDF signatures and therefore must not be used for a multi-signature sequence. Use `visible` only when one visible signature is required and the document does not need to retain an earlier PDF signature.
+
+For visible mode, optionally send `signature_position` to select one of the four page corners. If the field is omitted, IAM uses the bottom-right position.
 
 ### Successful response
 

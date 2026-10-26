@@ -180,9 +180,19 @@ app.post('/esign', upload.single('document'), async (request, response, next) =>
     const signatureFieldName = typeof request.body.signature_field_name === 'string'
       ? request.body.signature_field_name.trim()
       : '';
+    const signaturePosition = typeof request.body.signature_position === 'string'
+      ? request.body.signature_position.trim()
+      : '';
 
     if (mode === 'visible' && signerName === '') {
       renderHome(request, response, { status: 422, error: 'Signer name is required for visible signing.' });
+
+      return;
+    }
+
+    if (mode === 'visible' && signaturePosition !== ''
+      && !['top-left', 'top-right', 'bottom-left', 'bottom-right'].includes(signaturePosition)) {
+      renderHome(request, response, { status: 422, error: 'Choose a valid visible signature position.' });
 
       return;
     }
@@ -213,6 +223,10 @@ app.post('/esign', upload.single('document'), async (request, response, next) =>
 
     if (mode === 'visible') {
       form.append('signer_name', signerName);
+
+      if (signaturePosition !== '') {
+        form.append('signature_position', signaturePosition);
+      }
     } else {
       form.append('signature_field_name', signatureFieldName || 'Node application approval');
     }
@@ -308,7 +322,10 @@ app.use((error, request, response, _next) => {
   }
 
   console.error(error);
-  response.status(500).render('home', { error: 'Unable to complete the eSign request. Check the server log.' });
+  renderHome(request, response, {
+    status: 500,
+    error: 'Unable to complete the eSign request. Check the server log.',
+  });
 });
 
 app.listen(config.port, () => {

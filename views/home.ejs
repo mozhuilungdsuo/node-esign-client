@@ -28,6 +28,16 @@
             <input id="signer_name" name="signer_name" maxlength="120" disabled>
             <p class="hint">Visible mode is for a single signature and does not preserve earlier PDF signatures.</p>
         </div>
+        <div id="signature-position-group" class="hidden">
+            <label for="signature_position">Visible signature position</label>
+            <select id="signature_position" name="signature_position" disabled>
+                <option value="">Bottom right (IAM default)</option>
+                <option value="top-left">Top left</option>
+                <option value="top-right">Top right</option>
+                <option value="bottom-left">Bottom left</option>
+                <option value="bottom-right">Bottom right</option>
+            </select>
+        </div>
         <% if (hasReusableUidToken) { %>
             <label><input name="reuse_uid_token" type="checkbox" checked> Reuse the UID token saved by this application</label>
             <p class="hint">The token stays on the server; it is never shown in this form.</p>
@@ -38,8 +48,10 @@
         const mode = document.getElementById('mode');
         const signatureFieldGroup = document.getElementById('signature-field-group');
         const signerNameGroup = document.getElementById('signer-name-group');
+        const signaturePositionGroup = document.getElementById('signature-position-group');
         const signatureFieldName = document.getElementById('signature_field_name');
         const signerName = document.getElementById('signer_name');
+        const signaturePosition = document.getElementById('signature_position');
 
         function updateSigningFields() {
             const visible = mode.value === 'visible';
@@ -48,6 +60,8 @@
             signerNameGroup.classList.toggle('hidden', !visible);
             signerName.disabled = !visible;
             signerName.required = visible;
+            signaturePositionGroup.classList.toggle('hidden', !visible);
+            signaturePosition.disabled = !visible;
         }
 
         mode.addEventListener('change', updateSigningFields);
